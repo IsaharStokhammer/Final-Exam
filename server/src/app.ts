@@ -5,7 +5,7 @@ import { connectDB } from "./config/db";
 import cookieParser from "cookie-parser";
 import { errorMiddleware } from "./middleware/errorHandler";
 import SeedDBRoute from "./routes/seedDBRoute";
-import dbRoute from "./routes/dbRoute";
+import analysisRoute from "./routes/analysisRoute";
 dotenv.config();
 connectDB();
 const app = express();
@@ -23,7 +23,7 @@ app.use(
 );
 
 // Routes
-app.use("/api/analysis", dbRoute);
+app.use("/api/analysis", analysisRoute);
 app.use("/seed", SeedDBRoute);
 
 // Error handling middleware

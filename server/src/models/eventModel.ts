@@ -1,8 +1,8 @@
+// src/models/TerrorEventModel.ts
+
 import mongoose, { Schema, Document } from "mongoose";
 
-import { Types } from 'mongoose';
-
-export interface ITerrorEvent  extends Document {
+export interface ITerrorEvent extends Document {
     eventid: string;
     iyear: number;
     imonth: number;
@@ -22,11 +22,12 @@ export interface ITerrorEvent  extends Document {
     nperps: number | null;
     summary: string | null;
 }
+
 const TerrorEventSchema = new Schema<ITerrorEvent>({
-    eventid: { type: String},
-    iyear: { type: Number},
-    imonth: { type: Number},
-    iday: { type: Number},
+    eventid: { type: String },
+    iyear: { type: Number },
+    imonth: { type: Number },
+    iday: { type: Number },
     country_txt: { type: String },
     region_txt: { type: String },
     city: { type: String },
@@ -42,5 +43,10 @@ const TerrorEventSchema = new Schema<ITerrorEvent>({
     nperps: { type: Number, default: null },
     summary: { type: String, default: null }
 });
+
+// הוספת אינדקסים לשדות נפוצים
+TerrorEventSchema.index({ attacktype1_txt: 1 });
+TerrorEventSchema.index({ city: 1 });
+TerrorEventSchema.index({ iyear: 1 });
 
 export default mongoose.model<ITerrorEvent>("TerrorEventModel", TerrorEventSchema);
