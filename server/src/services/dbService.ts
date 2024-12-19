@@ -31,7 +31,6 @@ export const getDeadliestAttackTypesService = async () => {
   } catch (error) {}
 };
 
-
 export interface HighestCasualtyRegion {
   regionType: string;
   regionName: string;
@@ -42,18 +41,17 @@ export interface HighestCasualtyRegion {
   averageCasualties: number;
 }
 
-export const getHighestCasualtyRegionsService = async (): Promise<HighestCasualtyRegion[]> => {
+export const getHighestCasualtyRegionsService = async (): Promise<
+  HighestCasualtyRegion[]
+> => {
   try {
     const highestCasualtyRegions = await TerrorEventModel.aggregate([
       {
         $addFields: {
           casualties: {
-            $add: [
-              { $ifNull: ["$nkill", 0] },
-              { $ifNull: ["$nwound", 0] }
-            ]
-          }
-        }
+            $add: [{ $ifNull: ["$nkill", 0] }, { $ifNull: ["$nwound", 0] }],
+          },
+        },
       },
       {
         $facet: {
@@ -63,8 +61,8 @@ export const getHighestCasualtyRegionsService = async (): Promise<HighestCasualt
                 _id: "$city",
                 averageCasualties: { $avg: "$casualties" },
                 latitude: { $first: "$latitude" },
-                longitude: { $first: "$longitude" }
-              }
+                longitude: { $first: "$longitude" },
+              },
             },
             { $sort: { averageCasualties: -1 } },
             { $limit: 1 },
@@ -75,11 +73,11 @@ export const getHighestCasualtyRegionsService = async (): Promise<HighestCasualt
                 regionName: "$_id",
                 coordinates: {
                   latitude: "$latitude",
-                  longitude: "$longitude"
+                  longitude: "$longitude",
                 },
-                averageCasualties: { $round: ["$averageCasualties", 2] }
-              }
-            }
+                averageCasualties: { $round: ["$averageCasualties", 2] },
+              },
+            },
           ],
           topCountries: [
             {
@@ -87,8 +85,8 @@ export const getHighestCasualtyRegionsService = async (): Promise<HighestCasualt
                 _id: "$country_txt",
                 averageCasualties: { $avg: "$casualties" },
                 latitude: { $first: "$latitude" },
-                longitude: { $first: "$longitude" }
-              }
+                longitude: { $first: "$longitude" },
+              },
             },
             { $sort: { averageCasualties: -1 } },
             { $limit: 1 },
@@ -99,11 +97,11 @@ export const getHighestCasualtyRegionsService = async (): Promise<HighestCasualt
                 regionName: "$_id",
                 coordinates: {
                   latitude: "$latitude",
-                  longitude: "$longitude"
+                  longitude: "$longitude",
                 },
-                averageCasualties: { $round: ["$averageCasualties", 2] }
-              }
-            }
+                averageCasualties: { $round: ["$averageCasualties", 2] },
+              },
+            },
           ],
           topRegions: [
             {
@@ -111,8 +109,8 @@ export const getHighestCasualtyRegionsService = async (): Promise<HighestCasualt
                 _id: "$region_txt",
                 averageCasualties: { $avg: "$casualties" },
                 latitude: { $first: "$latitude" },
-                longitude: { $first: "$longitude" }
-              }
+                longitude: { $first: "$longitude" },
+              },
             },
             { $sort: { averageCasualties: -1 } },
             { $limit: 1 },
@@ -123,25 +121,25 @@ export const getHighestCasualtyRegionsService = async (): Promise<HighestCasualt
                 regionName: "$_id",
                 coordinates: {
                   latitude: "$latitude",
-                  longitude: "$longitude"
+                  longitude: "$longitude",
                 },
-                averageCasualties: { $round: ["$averageCasualties", 2] }
-              }
-            }
-          ]
-        }
+                averageCasualties: { $round: ["$averageCasualties", 2] },
+              },
+            },
+          ],
+        },
       },
       {
         $project: {
           regions: {
-            $concatArrays: ["$topCities", "$topCountries", "$topRegions"]
-          }
-        }
+            $concatArrays: ["$topCities", "$topCountries", "$topRegions"],
+          },
+        },
       },
       { $unwind: "$regions" },
       {
-        $replaceRoot: { newRoot: "$regions" }
-      }
+        $replaceRoot: { newRoot: "$regions" },
+      },
     ]);
 
     return highestCasualtyRegions as HighestCasualtyRegion[];
@@ -151,78 +149,239 @@ export const getHighestCasualtyRegionsService = async (): Promise<HighestCasualt
   }
 };
 
+export const getTrendsForYearsService = async (
+  startYear: number,
+  endYear: number
+): Promise<any[]> => {
+  try {
+    const trends = await TerrorEventModel.aggregate([
+      {
+        $match: { iyear: { $gte: startYear, $lte: endYear } }, // סינון לפי טווח השנים
+      },
+      {
+        $facet: {
+          perType: [
+            {
+              $group: {
+                _id: { year: "$iyear", attackType: "$attacktype1_txt" },
+                count: { $sum: 1 },
+              },
+            },
+            {
+              $group: {
+                _id: "$_id.year",
+                attackTypes: {
+                  $push: {
+                    attackType: "$_id.attackType",
+                    count: "$count",
+                  },
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                year: "$_id",
+                attackTypes: 1,
+              },
+            },
+          ],
+          total: [
+            {
+              $group: {
+                _id: "$iyear",
+                totalCount: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                year: "$_id",
+                totalCount: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          perType: 1,
+          total: 1,
+        },
+      },
+    ]);
 
-//  טעות בשאלה!!!!!! אוף! אחרי שעכה שאני יושב על זה
+    const perType = trends[0].perType;
+    const total = trends[0].total;
 
+    const result: any[] = perType.map((item: any) => {
+      const totalItem = total.find((t: any) => t.year === item.year);
+      return {
+        year: item.year,
+        attackTypes: item.attackTypes,
+        totalCount: totalItem ? totalItem.totalCount : 0,
+      };
+    });
 
-// interface TopAverageCasualtyCity {
-//   attackType: string;
-//   city: string;
-//   country: string;
-//   coordinates: {
-//     latitude: number | null;
-//     longitude: number | null;
-//   };
-//   averageCasualties: number;
-// }
+    for (let year = startYear; year <= endYear; year++) {
+      if (!result.find((r) => r.year === year)) {
+        result.push({
+          year,
+          attackTypes: [],
+          totalCount: 0,
+        });
+      }
+    }
 
-// export const getTopAverageCasualtyCities = async (): Promise<TopAverageCasualtyCity[]> => {
-//   try {
-//     const topAverageCasualtyCities = await TerrorEventModel.aggregate([
-//       {
-//         $addFields: {
-//           casualties: {
-//             $add: [
-//               { $ifNull: ["$nkill", 0] },
-//               { $ifNull: ["$nwound", 0] }
-//             ]
-//           }
-//         }
-//       },
-//       {
-//         $group: {
-//           _id: {
-//             attackType: "$attacktype1_txt",
-//             city: "$city",
-//             country: "$country_txt",
-//             latitude: "$latitude",
-//             longitude: "$longitude"
-//           },
-//           averageCasualties: { $avg: "$casualties" }
-//         }
-//       },
-//       {
-//         $sort: { "_id.attackType": 1, "averageCasualties": -1 }
-//       },
-//       {
-//         $group: {
-//           _id: "$_id.attackType",
-//           city: { $first: "$_id.city" },
-//           country: { $first: "$_id.country" },
-//           latitude: { $first: "$_id.latitude" },
-//           longitude: { $first: "$_id.longitude" },
-//           averageCasualties: { $first: "$averageCasualties" }
-//         }
-//       },
-//       {
-//         $project: {
-//           _id: 0,
-//           attackType: "$_id",
-//           city: 1,
-//           country: 1,
-//           coordinates: {
-//             latitude: "$latitude",
-//             longitude: "$longitude"
-//           },
-//           averageCasualties: { $round: ["$averageCasualties", 2] }
-//         }
-//       }
-//     ]);
+    result.sort((a, b) => a.year - b.year);
 
-//     return topAverageCasualtyCities as TopAverageCasualtyCity[];
-//   } catch (error) {
-//     console.error("Error in getTopAverageCasualtyCities:", error);
-//     throw new Error("Failed to fetch top average casualty cities");
-//   }
-// };
+    return result;
+  } catch (error) {
+    console.error("Error in getTrendsForYearsService:", error);
+    throw new Error("Failed to fetch trends for years");
+  }
+};
 
+//--אין כזאת דרישה אבל זה מגניב😉  מחזיר את חמשת הארגונים הקטלניים בעולם
+export const getTopGroupsService = async (): Promise<any[]> => {
+  try {
+    const topGroups = await TerrorEventModel.aggregate([
+      {
+        $group: {
+          _id: "$gname",
+          totalCasualties: {
+            $sum: {
+              $add: [{ $ifNull: ["$nkill", 0] }, { $ifNull: ["$nwound", 0] }],
+            },
+          },
+          totalKills: { $sum: { $ifNull: ["$nkill", 0] } },
+          totalWounds: { $sum: { $ifNull: ["$nwound", 0] } },
+          eventCount: { $sum: 1 },
+        },
+      },
+      { $sort: { totalCasualties: -1 } },
+      { $limit: 5 },
+      {
+        $project: {
+          _id: 0,
+          groupName: "$_id",
+          totalCasualties: 1,
+          totalKills: 1,
+          totalWounds: 1,
+          eventCount: 1,
+        },
+      },
+    ]);
+
+    return topGroups;
+  } catch (error) {
+    console.error("Error in getTopGroupsService:", error);
+    throw new Error("Failed to fetch top groups");
+  }
+};
+
+export const getTopGroupsByRegionService = async (
+  region: string,
+  limit?: number
+): Promise<any[]> => {
+  try {
+    const pipeline: any[] = [
+      {
+        $match: { region_txt: region },
+      },
+      {
+        $group: {
+          _id: "$gname",
+          totalCasualties: {
+            $sum: {
+              $add: [{ $ifNull: ["$nkill", 0] }, { $ifNull: ["$nwound", 0] }],
+            },
+          },
+          totalKills: { $sum: { $ifNull: ["$nkill", 0] } },
+          totalWounds: { $sum: { $ifNull: ["$nwound", 0] } },
+          eventCount: { $sum: 1 },
+        },
+      },
+      { $sort: { totalCasualties: -1 } },
+      {
+        $project: {
+          _id: 0,
+          groupName: "$_id",
+          totalCasualties: 1,
+          totalKills: 1,
+          totalWounds: 1,
+          eventCount: 1,
+        },
+      },
+    ];
+
+    if (limit) {
+      pipeline.push({ $limit: limit });
+    }
+
+    return await TerrorEventModel.aggregate(pipeline);
+  } catch (error) {
+    console.error("Error in getTopGroupsByRegionService:", error);
+    throw new Error("Failed to fetch top groups by region");
+  }
+};
+
+export const getGroupsByYearService = async (year: number): Promise<any[]> => {
+    try {
+      const groups = await TerrorEventModel.aggregate([
+        {
+          $match: { iyear: year }
+        },
+        {
+          $group: {
+            _id: "$gname",
+            totalIncidents: { $sum: 1 }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            groupName: "$_id",
+            totalIncidents: 1
+          }
+        }
+      ]);
+  
+      return groups;
+    } catch (error) {
+      console.error("Error in getGroupsByYearService:", error);
+      throw new Error("Failed to fetch groups by year");
+    }
+  };
+  
+  export const getYearsByGroupService = async (groupName: string): Promise<any[]> => {
+    try {
+      const years = await TerrorEventModel.aggregate([
+        {
+          $match: { gname: groupName }
+        },
+        {
+          $group: {
+            _id: "$iyear",
+            totalIncidents: { $sum: 1 }
+          }
+        },
+        {
+          $sort: { _id: 1 }
+        },
+        {
+          $project: {
+            _id: 0,
+            year: "$_id",
+            totalIncidents: 1
+          }
+        }
+      ]);
+  
+      return years;
+    } catch (error) {
+      console.error("Error in getYearsByGroupService:", error);
+      throw new Error("Failed to fetch years by group");
+    }
+  };
+  
