@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { createResponse } from "../utils/utils";
 import {
   getDeadliestAttackTypesService,
+  getDeadliestRegionsOfGroupService,
   getGroupsByYearService,
   getHighestCasualtyRegionsService,
   getTopGroupsByRegionService,
@@ -91,3 +92,21 @@ export const getGroupsByYear = async (
     res.status(500).json(createResponse({}, `${error}`, false));
   }
 };
+
+export const getDeadliestRegionsByGroup = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const {orgName} = req.query
+        const response = await  getDeadliestRegionsOfGroupService({orgName })
+        res
+        .status(200)
+        .json(
+          createResponse(
+            { response },
+            "Incident frequency fetched successfully"
+          )
+        ); 
+    } catch (error) {
+        
+    }
+}
+

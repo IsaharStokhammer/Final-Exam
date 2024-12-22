@@ -327,61 +327,109 @@ export const getTopGroupsByRegionService = async (
 };
 
 export const getGroupsByYearService = async (year: number): Promise<any[]> => {
-    try {
-      const groups = await TerrorEventModel.aggregate([
-        {
-          $match: { iyear: year }
+  try {
+    const groups = await TerrorEventModel.aggregate([
+      {
+        $match: { iyear: year },
+      },
+      {
+        $group: {
+          _id: "$gname",
+          totalIncidents: { $sum: 1 },
         },
-        {
-          $group: {
-            _id: "$gname",
-            totalIncidents: { $sum: 1 }
-          }
+      },
+      {
+        $project: {
+          _id: 0,
+          groupName: "$_id",
+          totalIncidents: 1,
         },
-        {
-          $project: {
-            _id: 0,
-            groupName: "$_id",
-            totalIncidents: 1
-          }
-        }
-      ]);
-  
-      return groups;
-    } catch (error) {
-      console.error("Error in getGroupsByYearService:", error);
-      throw new Error("Failed to fetch groups by year");
-    }
-  };
-  
-  export const getYearsByGroupService = async (groupName: string): Promise<any[]> => {
-    try {
-      const years = await TerrorEventModel.aggregate([
-        {
-          $match: { gname: groupName }
+      },
+    ]);
+
+    return groups;
+  } catch (error) {
+    console.error("Error in getGroupsByYearService:", error);
+    throw new Error("Failed to fetch groups by year");
+  }
+};
+
+export const getYearsByGroupService = async (
+  groupName: string
+): Promise<any[]> => {
+  try {
+    const years = await TerrorEventModel.aggregate([
+      {
+        $match: { gname: groupName },
+      },
+      {
+        $group: {
+          _id: "$iyear",
+          totalIncidents: { $sum: 1 },
         },
-        {
-          $group: {
-            _id: "$iyear",
-            totalIncidents: { $sum: 1 }
-          }
+      },
+      {
+        $sort: { _id: 1 },
+      },
+      {
+        $project: {
+          _id: 0,
+          year: "$_id",
+          totalIncidents: 1,
         },
-        {
-          $sort: { _id: 1 }
+      },
+    ]);
+
+    return years;
+  } catch (error) {
+    console.error("Error in getYearsByGroupService:", error);
+    throw new Error("Failed to fetch years by group");
+  }
+};
+
+export const getDeadliestRegionsOfGroupService = async ({ orgName }: any) => {
+  const result = await TerrorEventModel.aggregate([
+    {
+      $group: {
+        _id: { region: "$region_txt", org: "$gname" },
+        totalCasualties: {
+          $sum: {
+            $add: [{ $ifNull: ["$nkill", 0] }, { $ifNull: ["$nwound", 0] }],
+          },
         },
-        {
-          $project: {
-            _id: 0,
-            year: "$_id",
-            totalIncidents: 1
-          }
-        }
-      ]);
-  
-      return years;
-    } catch (error) {
-      console.error("Error in getYearsByGroupService:", error);
-      throw new Error("Failed to fetch years by group");
-    }
-  };
-  
+      },
+    },
+
+    {
+      $sort: {
+        "_id.region": 1,
+        totalCasualties: -1,
+      },
+    },
+
+    {
+      $group: {
+        _id: "$_id.region",
+        topOrg: { $first: "$_id.org" },
+        totalCasualties: { $first: "$totalCasualties" },
+      },
+    },
+
+    {
+      $match: {
+        topOrg: orgName,
+      },
+    },
+
+    {
+      $project: {
+        _id: 0,
+        region: "$_id",
+        topOrg: 1,
+        totalCasualties: 1,
+      },
+    },
+  ]);
+
+  return result;
+};
