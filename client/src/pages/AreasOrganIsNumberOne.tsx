@@ -57,7 +57,7 @@ const AreasOrganIsNumberOne = () => {
   }
 
   if (!loading && data.length === 0) {
-    return <p style={{ textAlign: "center" }}>הארגון אינו מוביל באף אחד מהאיזורים "{orgName}".</p>;
+    return <p style={{ textAlign: "center" }}>הארגון אינו מוביל באף איזור "{orgName}".</p>;
   }
 
   return (
@@ -81,7 +81,8 @@ const AreasOrganIsNumberOne = () => {
           backgroundColor: "white",
         }}
       >
-        <h1 style={{ marginBottom: "10px" }}>בחירת ארגון</h1>
+        <h2 style={{ marginBottom: "10px" }}>חיפוש האיזורים בהם ארגון הוא הפעיל ביותר</h2>
+        <h3 style={{ marginBottom: "10px" }}>בחירת ארגון</h3>
         <div style={{ width: "300px", margin: "0 auto" }}>
           <Select
             options={options}

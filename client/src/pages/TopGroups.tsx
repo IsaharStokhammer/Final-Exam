@@ -96,7 +96,7 @@ const TopGroups = () => {
   const [chartData, setChartData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [limit, setLimit] = useState<number>(5); // ברירת מחדל של לימיט
+  const [limit, setLimit] = useState<number>(5);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
 
   const fetchData = async (region: string, limit: number) => {
@@ -169,15 +169,15 @@ const TopGroups = () => {
     <div
       style={{
         width: "100vw",
-        height: "calc(100vh - 60px)", // מפחית את גובה ה-navbar
-        marginTop: "60px", // מפנה מקום ל-navbar
+        height: "calc(100vh - 60px)", 
+        marginTop: "60px", 
         display: "flex",
-        flexDirection: "column", // פריסה אנכית
+        flexDirection: "column", 
       }}
     >
       <div style={{ width: "100%", height: "50%" }}>
         <MapContainer
-          center={[20, 0]} // מרכז המפה
+          center={[20, 0]} 
           zoom={2}
           style={{ height: "100%", width: "100%" }}
         >
@@ -210,6 +210,7 @@ const TopGroups = () => {
       <div style={{ width: "100%", height: "50%", padding: "20px", backgroundColor: "#f5f5f5" }}>
         <h2 style={{ textAlign: "center" }}>Top Groups in {selectedRegion || "Selected Region"}</h2>
         <div style={{ marginBottom: "20px", textAlign: "center" }}>
+          <label style={{ marginRight: "10px" }}>Limit:</label>
           <input
             type="number"
             value={limit}

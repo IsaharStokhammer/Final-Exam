@@ -9,21 +9,22 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const pages = [
   { label: "בית", path: "/" },
   { label: "סוגי מתקפות", path: "/AttackTypesPage" },
   { label: "איזורים מסוכנים", path: "/AreasWithTheHighestAverageCasualties" },
-  { label: "חיפוש לפי שנה", path: "/EventsByYearPage" },
+  { label: "טווח שנים", path: "/EventsByYearPage" },
   { label: "חיפוש קבוצה", path: "/AllEventsOfGroup" },
-  { label: "איזורים לפי ארגון", path: "/AreasOrganIsNumberOne" },
-  { label: "קבוצות לפי שנה", path: "/GroupsByYear" },
-  { label: " קבוצות מסוכנות באיזור", path: "/TopGroups" }
+  { label: "חיפוש שנה", path: "/GroupsByYear" },
+  { label: `איזורים מאוימים ע"י ארגון`, path: "/AreasOrganIsNumberOne" },
+  { label: " קבוצות מסוכנות באיזור", path: "/TopGroups" },
 ];
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
 
   const handleOpenNavMenu = (event: any) => {
@@ -91,6 +92,12 @@ const Navbar = () => {
                 <MenuItem
                   key={page.path}
                   onClick={() => handleNavigate(page.path)}
+                  selected={location.pathname === page.path}
+                  sx={{
+                    backgroundColor:
+                      location.pathname === page.path ? "primary.main" : "inherit",
+                    color: location.pathname === page.path ? "white" : "inherit",
+                  }}
                 >
                   <Typography textAlign="center">{page.label}</Typography>
                 </MenuItem>
@@ -123,7 +130,17 @@ const Navbar = () => {
               <Button
                 key={page.path}
                 onClick={() => handleNavigate(page.path)}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{
+                  my: 2,
+                  color: location.pathname === page.path ? "white" : "inherit",
+                  backgroundColor:
+                    location.pathname === page.path ? "primary.main" : "inherit",
+                  "&:hover": {
+                    backgroundColor: location.pathname === page.path
+                      ? "primary.dark"
+                      : "rgba(255, 255, 255, 0.1)",
+                  },
+                }}
               >
                 {page.label}
               </Button>

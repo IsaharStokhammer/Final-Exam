@@ -1,7 +1,7 @@
 // App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AttackTypesPage from './pages/AttackTypesPage';
+import AttackTypesPage from './pages/AttackTypes';
 import Navbar from './components/NavBar/NavBar';
 import AreasWithTheHighestAverageCasualties from './pages/AreasWithTheHighestAverageCasualties';
 import Trands from './pages/Trands';

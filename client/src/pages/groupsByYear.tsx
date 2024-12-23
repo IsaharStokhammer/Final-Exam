@@ -18,18 +18,16 @@ const GroupsByYear = () => {
   const [chartData, setChartData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedYear, setSelectedYear] = useState<string>("2004"); // ברירת מחדל לשנה 2004
+  const [selectedYear, setSelectedYear] = useState<string>("2004");
 
-  // פונקציה לטעינת הנתונים מה-API
   const fetchData = async (year: string) => {
     try {
       setLoading(true);
       const response = await axios.get(
         `http://localhost:3000/api/analysis/relationships/groups-by-year/${year}`
       );
-      const data = response.data.data.data; // ניגש ל"דאטה" הפנימי
+      const data = response.data.data.data;
 
-      // עיבוד הנתונים לגרף
       const chartData = {
         labels: data.map((item: any) => item.groupName),
         datasets: [
@@ -51,7 +49,6 @@ const GroupsByYear = () => {
     }
   };
 
-  // קריאה ל-API בכל פעם שהשנה מתעדכנת
   useEffect(() => {
     if (selectedYear.length === 4 && !isNaN(Number(selectedYear))) {
       fetchData(selectedYear);
@@ -87,7 +84,7 @@ const GroupsByYear = () => {
   return (
     <div
       style={{
-        width: "100%",
+        width: "100vw",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -106,9 +103,9 @@ const GroupsByYear = () => {
           textAlign: "center",
         }}
       >
-        Total Incidents by Groups ({selectedYear})
+        מתקפות בשנת {selectedYear}
       </h1>
-      
+
       <input
         type="number"
         value={selectedYear}
@@ -124,7 +121,7 @@ const GroupsByYear = () => {
           width: "150px",
         }}
       />
-      <div style={{ width: "90%", height: "70%" }}>
+      <div style={{ width: "100%", height: "70%" }}>
         <Bar data={chartData} options={chartOptions} />
       </div>
     </div>

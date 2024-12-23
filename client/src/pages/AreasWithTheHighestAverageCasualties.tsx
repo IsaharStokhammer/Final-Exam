@@ -28,11 +28,11 @@ const AreasWithTheHighestAverageCasualties = () => {
   }
 
   return (
-    <div style={{ height: "100vh", width: "100vw" }}> {/* גובה ורוחב מלאים */}
+    <div style={{ height: "100vh", width: "100vw" }}> 
       {status === "fulfilled" && areasWithTheHighestAverageCasualties && (
         <MapContainer
-          center={[0, 0]} // מרכז ברירת מחדל
-          zoom={2} // זום התחלתי
+          center={[0, 0]} 
+          zoom={3} 
           style={{ height: "100%", width: "100%" }}
         >
           <TileLayer

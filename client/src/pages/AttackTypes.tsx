@@ -57,7 +57,7 @@ const AttackTypesPage = () => {
         text: "Total Casualties by Attack Type",
       },
     },
-    maintainAspectRatio: false, //מועתק - לבדוק איך זה עובד בדיוק
+    maintainAspectRatio: false,
   };
 
   if (status === "pending") {
