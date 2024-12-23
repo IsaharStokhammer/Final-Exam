@@ -15,12 +15,14 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: "http://localhost:5174",
-    credentials: true, // Required for cookies
-  })
-);
+
+app.use(cors());
+// app.use(
+//   cors({
+//     origin: "http://localhost:5175",
+//     credentials: true, // Required for cookies
+//   })
+// );
 
 // Routes
 app.use("/api/analysis", analysisRoute);
