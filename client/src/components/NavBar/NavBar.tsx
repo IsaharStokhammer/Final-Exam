@@ -19,7 +19,7 @@ const pages = [
   { label: "כל המתקפות של קבוצה", path: "/AllEventsOfGroup" },
   { label: "איזורים לפי ארגון", path: "/AreasOrganIsNumberOne" },
   { label: "קבוצות לפי שנה", path: "/GroupsByYear" },
-  { label: "קבוצות מסוכנות", path: "/TopGroups" },
+  { label: " קבוצות מסוכנות באיזור", path: "/TopGroups" },
   { label: "trends", path: "/Trands" },
 ];
 
@@ -110,7 +110,7 @@ const Navbar = () => {
             }}
             onClick={() => navigate("/")}
           >
-            האתר שלי
+            World Terrorism Database
           </Typography>
 
           <Box
