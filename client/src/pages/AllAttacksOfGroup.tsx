@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
+import Select from "react-select";
+import { organizationsName } from "../data";
 
 import {
   Chart as ChartJS,
@@ -27,7 +29,10 @@ const AllAttacksOfGroup = () => {
   const [chartData, setChartData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [groupName, setGroupName] = useState<string>("Ulster Freedom Fighters (UFF)"); // שם הארגון המתחלתי
+  const [selectedOption, setSelectedOption] = useState<any>({
+    label: "Hamas (Islamic Resistance Movement)",
+    value: "Hamas (Islamic Resistance Movement)",
+  });
 
   // פונקציה לטעינת נתונים
   const fetchData = async (group: string) => {
@@ -65,8 +70,8 @@ const AllAttacksOfGroup = () => {
 
   // קריאה ל-API כאשר המשתמש מבצע חיפוש
   const handleSearch = () => {
-    if (groupName.trim()) {
-      fetchData(groupName);
+    if (selectedOption?.value.trim()) {
+      fetchData(selectedOption.value);
     }
   };
 
@@ -78,16 +83,22 @@ const AllAttacksOfGroup = () => {
       },
       title: {
         display: true,
-        text: `Total Incidents Over Years for "${groupName}"`,
+        text: `Total Incidents Over Years for "${selectedOption?.label}"`,
       },
     },
     maintainAspectRatio: false,
   };
 
+  // עיבוד נתונים ל-react-select
+  const options = organizationsName.map((org) => ({
+    label: org,
+    value: org,
+  }));
+
   return (
     <div
       style={{
-        width: "100%",
+        width: "100vw",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -106,39 +117,32 @@ const AllAttacksOfGroup = () => {
           textAlign: "center",
         }}
       >
-        All Events of a Group
+        All Attacks of a Group
       </h1>
-      <div style={{ marginBottom: "20px", textAlign: "center" }}>
-        <input
-          type="text"
-          value={groupName}
-          onChange={(e) => setGroupName(e.target.value)}
-          placeholder="Enter group name"
-          style={{
-            padding: "10px",
-            fontSize: "1rem",
-            border: "1px solid #ccc",
-            borderRadius: "5px",
-            textAlign: "center",
-            width: "300px",
-            marginRight: "10px",
-          }}
+      <div style={{ width: "50%", marginBottom: "20px" }}>
+        <Select
+          options={options}
+          value={selectedOption}
+          onChange={(option) => setSelectedOption(option)}
+          placeholder="Select a group..."
+          isClearable
         />
-        <button
-          onClick={handleSearch}
-          style={{
-            padding: "10px 20px",
-            fontSize: "1rem",
-            backgroundColor: "#4CAF50",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Search
-        </button>
       </div>
+      <button
+        onClick={handleSearch}
+        style={{
+          padding: "10px 20px",
+          fontSize: "1rem",
+          backgroundColor: "#4CAF50",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          marginBottom: "20px",
+        }}
+      >
+        Search
+      </button>
       {loading && <p>טוען נתונים...</p>}
       {error && <p>שגיאה בטעינת הנתונים: {error}</p>}
       {!loading && !error && chartData && (
@@ -151,4 +155,3 @@ const AllAttacksOfGroup = () => {
 };
 
 export default AllAttacksOfGroup;
-

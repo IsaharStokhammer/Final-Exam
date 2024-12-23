@@ -16,11 +16,10 @@ const pages = [
   { label: "סוגי מתקפות", path: "/AttackTypesPage" },
   { label: "איזורים מסוכנים", path: "/AreasWithTheHighestAverageCasualties" },
   { label: "חיפוש לפי שנה", path: "/EventsByYearPage" },
-  { label: "כל המתקפות של קבוצה", path: "/AllEventsOfGroup" },
+  { label: "חיפוש קבוצה", path: "/AllEventsOfGroup" },
   { label: "איזורים לפי ארגון", path: "/AreasOrganIsNumberOne" },
   { label: "קבוצות לפי שנה", path: "/GroupsByYear" },
-  { label: " קבוצות מסוכנות באיזור", path: "/TopGroups" },
-  { label: "trends", path: "/Trands" },
+  { label: " קבוצות מסוכנות באיזור", path: "/TopGroups" }
 ];
 
 const Navbar = () => {

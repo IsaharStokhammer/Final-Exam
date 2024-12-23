@@ -17,7 +17,6 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-// נתוני האזורים
 const regions = [
   {
     latitude: 37.105643,
@@ -110,7 +109,6 @@ const TopGroups = () => {
       );
       const data = response.data.data.response;
 
-      // עיבוד הנתונים לגרף
       const chartData = {
         labels: data.map((item: any) => item.groupName),
         datasets: [
@@ -168,8 +166,16 @@ const TopGroups = () => {
   };
 
   return (
-    <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div style={{ flex: 1 }}>
+    <div
+      style={{
+        width: "100vw",
+        height: "calc(100vh - 60px)", // מפחית את גובה ה-navbar
+        marginTop: "60px", // מפנה מקום ל-navbar
+        display: "flex",
+        flexDirection: "column", // פריסה אנכית
+      }}
+    >
+      <div style={{ width: "100%", height: "50%" }}>
         <MapContainer
           center={[20, 0]} // מרכז המפה
           zoom={2}
@@ -201,7 +207,7 @@ const TopGroups = () => {
           ))}
         </MapContainer>
       </div>
-      <div style={{ flex: 1, padding: "20px", backgroundColor: "#f5f5f5" }}>
+      <div style={{ width: "100%", height: "50%", padding: "20px", backgroundColor: "#f5f5f5" }}>
         <h2 style={{ textAlign: "center" }}>Top Groups in {selectedRegion || "Selected Region"}</h2>
         <div style={{ marginBottom: "20px", textAlign: "center" }}>
           <input
@@ -222,7 +228,7 @@ const TopGroups = () => {
         {loading && <p>טוען נתונים...</p>}
         {error && <p>שגיאה בטעינת הנתונים: {error}</p>}
         {!loading && !error && chartData && (
-          <div style={{ width: "80%", height: "60%", margin: "0 auto" }}>
+          <div style={{ width: "100%", height: "80%", margin: "0 auto" }}>
             <Bar data={chartData} options={chartOptions} />
           </div>
         )}

@@ -57,7 +57,7 @@ const AttackTypesPage = () => {
         text: "Total Casualties by Attack Type",
       },
     },
-    maintainAspectRatio: false, // אפשר לשנות את היחס בין רוחב לגובה
+    maintainAspectRatio: false, //מועתק - לבדוק איך זה עובד בדיוק
   };
 
   if (status === "pending") {
@@ -75,7 +75,7 @@ const AttackTypesPage = () => {
   return (
     <div
       style={{
-        width: "100%",
+        width: "100vw",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -97,7 +97,7 @@ const AttackTypesPage = () => {
         Attack Types Data
       </h1>
       {chartData && (
-        <div style={{ width: "90%", height: "80%" }}>
+        <div style={{ width: "100%", height: "80%" }}>
           <Bar data={chartData} options={chartOptions} />
         </div>
       )}
