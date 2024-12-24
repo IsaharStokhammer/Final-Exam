@@ -9,7 +9,7 @@ import AllAttacksOfGroup from './pages/AllAttacksOfGroup';
 import AreasOrganIsNumberOne from './pages/AreasOrganIsNumberOne';
 import GroupsByYear from './pages/groupsByYear';
 import TopGroups from './pages/TopGroups';
-import CrudPage from './pages/CrudPage';
+import CrudPage from './pages/CRUDgage/CrudPage';
 const App = () => {
   return (
     <Router>
