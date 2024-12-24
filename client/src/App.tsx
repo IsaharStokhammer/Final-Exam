@@ -9,6 +9,7 @@ import AllAttacksOfGroup from './pages/AllAttacksOfGroup';
 import AreasOrganIsNumberOne from './pages/AreasOrganIsNumberOne';
 import GroupsByYear from './pages/groupsByYear';
 import TopGroups from './pages/TopGroups';
+import CrudPage from './pages/CrudPage';
 const App = () => {
   return (
     <Router>
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/AreasOrganIsNumberOne" element={<AreasOrganIsNumberOne />} />
         <Route path="/GroupsByYear" element={<GroupsByYear />} />
         <Route path="/TopGroups" element={<TopGroups />} />
+        <Route path="/crud" element={<CrudPage />} />
       </Routes>
     </Router>
   );

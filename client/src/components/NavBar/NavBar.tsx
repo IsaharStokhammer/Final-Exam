@@ -20,6 +20,8 @@ const pages = [
   { label: "חיפוש שנה", path: "/GroupsByYear" },
   { label: `איזורים מאוימים ע"י ארגון`, path: "/AreasOrganIsNumberOne" },
   { label: " קבוצות מסוכנות באיזור", path: "/TopGroups" },
+  { label: "ניהול אירועים", path: "/crud" }
+
 ];
 
 const Navbar = () => {

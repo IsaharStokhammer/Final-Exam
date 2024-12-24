@@ -1,24 +1,24 @@
 import TerrorEventModel from "../models/eventModel";
 
 export interface TerrorEvent {
-  eventid: string;
+  eventid: number;
   iyear: number;
   imonth: number;
   iday: number;
   country_txt: string;
   region_txt: string;
   city: string;
-  latitude: number | null;
-  longitude: number | null;
+  latitude: number;
+  longitude: number;
   attacktype1_txt: string;
   targtype1_txt: string;
   target1: string;
   gname: string;
   weaptype1_txt: string;
-  nkill: number | null;
-  nwound: number | null;
-  nperps: number | null;
-  summary: string | null;
+  nkill: number;
+  nwound: number;
+  nperps: number;
+  summary: string;
 }
 
 //CREATE
@@ -40,19 +40,18 @@ export const getAttack = async (id: string) => {
   }
 };
 //UPDATE
-export const updateAttack = async (id: string, data: TerrorEvent) => {
-  try {
-    const updatedEvent = await TerrorEventModel.findOneAndUpdate(
-        { eventid: id },
-        data,
-        { new: true }
+export const updateAttack = async (eventId: string, event: TerrorEvent) => {
+    try {
+      const updatedEvent = await TerrorEventModel.findOneAndUpdate(
+        { eventid: eventId }, 
+        { $set: event },   
+        { new: true }          
       );
-      
-    return updatedEvent;
-  } catch (error) {
-    throw error;
-  }
-};
+      return updatedEvent;
+    } catch (error) {
+      throw error;
+    }
+  };
 //DELETE
 export const deleteAttack = async (id: string) => {
   try {

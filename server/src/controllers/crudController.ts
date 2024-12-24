@@ -74,7 +74,8 @@ export const read = async (req: Request, res: Response): Promise<void> => {
 //UPDATE
 export const update = async (req: Request, res: Response): Promise<void> => {
   try {
-    const id = req.body._id;
+    console.log(req.body);
+    const id = req.body.id;
     if (!id) {
       res.status(400).json(createResponse({}, "Missing id", false));
       return;
