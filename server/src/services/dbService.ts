@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import TerrorEventModel from "../models/eventModel";
 
 export const getDeadliestAttackTypesService = async () => {
