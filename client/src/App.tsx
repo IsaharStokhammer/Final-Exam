@@ -1,5 +1,3 @@
-// App.jsx
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AttackTypesPage from './pages/AttackTypes';
 import Navbar from './components/NavBar/NavBar';
@@ -15,7 +13,6 @@ const App = () => {
     <Router>
       <Navbar />
       <Routes>
-        {/* <Route path="/" element={<Home />} /> */}
         <Route path="/AttackTypesPage" element={<AttackTypesPage />} />
         <Route path="/AreasWithTheHighestAverageCasualties" element={<AreasWithTheHighestAverageCasualties />} />
         <Route path="/EventsByYearPage" element={<Trands />} />
