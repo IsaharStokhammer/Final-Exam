@@ -35,12 +35,33 @@ const CreateEvent = () => {
   const handleCreateEvent = async () => {
     try {
       const { date, ...rest } = formData;
+      if (!date) {
+        toast.error("Please select a valid date.");
+        return;
+      }
       const [year, month, day] = [date.getFullYear(), date.getMonth() + 1, date.getDate()];
       const finalData = { ...rest, iyear: year, imonth: month, iday: day };
 
       await axios.post("http://localhost:3000/crud/create", finalData);
       setCreateModalOpen(false);
-      setFormData({});
+      setFormData({
+        eventid: "",
+        date: new Date(),
+        country_txt: "",
+        region_txt: "",
+        city: "",
+        latitude: null,
+        longitude: null,
+        attacktype1_txt: "",
+        targtype1_txt: "",
+        target1: "",
+        gname: "",
+        weaptype1_txt: "",
+        nkill: "",
+        nwound: "",
+        nperps: "",
+        summary: "",
+      });
       toast.success("Event created successfully!");
     } catch (error) {
       toast.error("Failed to create event");
@@ -96,7 +117,13 @@ const CreateEvent = () => {
             <label>Date:</label>
             <DatePicker
               selected={formData.date}
-              onChange={(date: Date) => setFormData({ ...formData, date })}
+              onChange={(date) => {
+                if (date instanceof Date) {
+                  setFormData({ ...formData, date });
+                } else {
+                  toast.error("Invalid date selected");
+                }
+              }}
               dateFormat="yyyy/MM/dd"
               customInput={<TextField fullWidth />}
             />

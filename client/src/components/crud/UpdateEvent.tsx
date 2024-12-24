@@ -8,31 +8,56 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+interface FormData {
+  eventid: string;
+  iyear: number;
+  imonth: number;
+  iday: number;
+  country_txt: string;
+  region_txt: string;
+  city: string;
+  latitude: number | null;
+  longitude: number | null;
+  attacktype1_txt: string;
+  targtype1_txt: string;
+  target1: string;
+  gname: string;
+  weaptype1_txt: string;
+  nkill: number | string;
+  nwound: number | string;
+  nperps: number | string;
+  summary: string;
+}
 
 const UpdateEvent = () => {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [eventID, setEventID] = useState("");
-  const [formData, setFormData] = useState<any>(null);
+  const [eventID, setEventID] = useState<string>("");
+  const [formData, setFormData] = useState<FormData | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleOpenUpdateModal = async () => {
     if (!eventID) {
-      toast.error("Please enter an Event ID");
+      setErrorMessage("Please enter an Event ID");
       return;
     }
 
     try {
       const response = await axios.get(`http://localhost:3000/crud/read/${eventID}`);
       setFormData(response.data.data.response);
-      toast.success("Event details loaded successfully!");
+      setErrorMessage("");
       setUpdateModalOpen(true);
     } catch (error) {
-      toast.error("Failed to fetch event details for update");
+      setErrorMessage("Failed to fetch event details for update");
     }
   };
 
   const handleUpdateEvent = async () => {
+    if (!formData) {
+      setErrorMessage("Form data is not loaded.");
+      return;
+    }
+
     try {
       const payload = {
         id: formData.eventid,
@@ -40,18 +65,20 @@ const UpdateEvent = () => {
       };
 
       await axios.put("http://localhost:3000/crud/update", payload);
-      toast.success("Event updated successfully!");
+      alert("Event updated successfully!");
       setUpdateModalOpen(false);
     } catch (error) {
       console.error("Failed to update event:", error);
-      toast.error("Failed to update event");
+      setErrorMessage("Failed to update event");
     }
   };
 
   const LocationMarker = () => {
     useMapEvents({
       click(e) {
-        setFormData({ ...formData, latitude: e.latlng.lat, longitude: e.latlng.lng });
+        if (formData) {
+          setFormData({ ...formData, latitude: e.latlng.lat, longitude: e.latlng.lng });
+        }
       },
     });
 
@@ -64,23 +91,34 @@ const UpdateEvent = () => {
     <div style={{ marginBottom: "20px", textAlign: "center" }}>
       <h3>Update Event</h3>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
-        <TextField
+        <input
           type="text"
           value={eventID}
           onChange={(e) => setEventID(e.target.value)}
           placeholder="Event ID"
-          variant="outlined"
-          style={{ width: "250px" }}
+          style={{
+            padding: "10px",
+            fontSize: "1rem",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+          }}
         />
-        <Button
-          variant="contained"
-          color="secondary"
+        <button
           onClick={handleOpenUpdateModal}
-          style={{ width: "150px" }}
+          style={{
+            padding: "10px 20px",
+            fontSize: "1rem",
+            backgroundColor: "#800080",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
         >
           Update Event
-        </Button>
+        </button>
       </div>
+      {errorMessage && <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>}
 
       {/* Update Modal */}
       <Modal open={updateModalOpen} onClose={() => setUpdateModalOpen(false)}>
@@ -109,15 +147,21 @@ const UpdateEvent = () => {
               <div style={{ marginBottom: "20px" }}>
                 <label>Date:</label>
                 <DatePicker
-                  selected={new Date(formData.iyear, formData.imonth - 1, formData.iday)}
-                  onChange={(date: Date) =>
-                    setFormData({
-                      ...formData,
-                      iyear: date.getFullYear(),
-                      imonth: date.getMonth() + 1,
-                      iday: date.getDate(),
-                    })
+                  selected={
+                    formData.iyear && formData.imonth && formData.iday
+                      ? new Date(formData.iyear, formData.imonth - 1, formData.iday)
+                      : null
                   }
+                  onChange={(date: Date | null) => {
+                    if (date) {
+                      setFormData({
+                        ...formData,
+                        iyear: date.getFullYear(),
+                        imonth: date.getMonth() + 1,
+                        iday: date.getDate(),
+                      });
+                    }
+                  }}
                   dateFormat="yyyy/MM/dd"
                   customInput={<TextField fullWidth />}
                 />
@@ -161,13 +205,63 @@ const UpdateEvent = () => {
                 value={formData.attacktype1_txt}
                 onChange={(e) => setFormData({ ...formData, attacktype1_txt: e.target.value })}
               />
-              <Button
-                variant="contained"
-                color="primary"
+              <TextField
+                label="Target Type"
                 fullWidth
-                onClick={handleUpdateEvent}
-                style={{ marginTop: "20px" }}
-              >
+                margin="normal"
+                value={formData.targtype1_txt}
+                onChange={(e) => setFormData({ ...formData, targtype1_txt: e.target.value })}
+              />
+              <TextField
+                label="Target"
+                fullWidth
+                margin="normal"
+                value={formData.target1}
+                onChange={(e) => setFormData({ ...formData, target1: e.target.value })}
+              />
+              <TextField
+                label="Group Name"
+                fullWidth
+                margin="normal"
+                value={formData.gname}
+                onChange={(e) => setFormData({ ...formData, gname: e.target.value })}
+              />
+              <TextField
+                label="Weapon Type"
+                fullWidth
+                margin="normal"
+                value={formData.weaptype1_txt}
+                onChange={(e) => setFormData({ ...formData, weaptype1_txt: e.target.value })}
+              />
+              <TextField
+                label="Kills"
+                fullWidth
+                margin="normal"
+                value={formData.nkill}
+                onChange={(e) => setFormData({ ...formData, nkill: e.target.value })}
+              />
+              <TextField
+                label="Wounded"
+                fullWidth
+                margin="normal"
+                value={formData.nwound}
+                onChange={(e) => setFormData({ ...formData, nwound: e.target.value })}
+              />
+              <TextField
+                label="Perpetrators"
+                fullWidth
+                margin="normal"
+                value={formData.nperps}
+                onChange={(e) => setFormData({ ...formData, nperps: e.target.value })}
+              />
+              <TextField
+                label="Summary"
+                fullWidth
+                margin="normal"
+                value={formData.summary}
+                onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+              />
+              <Button variant="contained" color="primary" fullWidth onClick={handleUpdateEvent}>
                 Save Changes
               </Button>
             </>
