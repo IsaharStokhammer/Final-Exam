@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const CreateEvent = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState({
     eventid: "",
     date: new Date(),
     country_txt: "",
@@ -26,9 +26,9 @@ const CreateEvent = () => {
     target1: "",
     gname: "",
     weaptype1_txt: "",
-    nkill: "",
-    nwound: "",
-    nperps: "",
+    nkill: 0,
+    nwound: 0,
+    nperps: 0,
     summary: "",
   });
 
@@ -57,9 +57,9 @@ const CreateEvent = () => {
         target1: "",
         gname: "",
         weaptype1_txt: "",
-        nkill: "",
-        nwound: "",
-        nperps: "",
+        nkill: 0,
+        nwound: 0,
+        nperps: 0,
         summary: "",
       });
       toast.success("Event created successfully!");
@@ -166,6 +166,65 @@ const CreateEvent = () => {
             margin="normal"
             value={formData.attacktype1_txt}
             onChange={(e) => setFormData({ ...formData, attacktype1_txt: e.target.value })}
+          />
+          <TextField
+            label="Target Type"
+            fullWidth
+            margin="normal"
+            value={formData.targtype1_txt}
+            onChange={(e) => setFormData({ ...formData, targtype1_txt: e.target.value })}
+          />
+          <TextField
+            label="Target"
+            fullWidth
+            margin="normal"
+            value={formData.target1}
+            onChange={(e) => setFormData({ ...formData, target1: e.target.value })}
+          />
+          <TextField
+            label="Group Name"
+            fullWidth
+            margin="normal"
+            value={formData.gname}
+            onChange={(e) => setFormData({ ...formData, gname: e.target.value })}
+          />
+          <TextField
+            label="Weapon Type"
+            fullWidth
+            margin="normal"
+            value={formData.weaptype1_txt}
+            onChange={(e) => setFormData({ ...formData, weaptype1_txt: e.target.value })}
+          />
+          <TextField
+            label="Kills"
+            fullWidth
+            margin="normal"
+            type="number"
+            value={formData.nkill}
+            onChange={(e) => setFormData({ ...formData, nkill: Number(e.target.value) })}
+          />
+          <TextField
+            label="Wounded"
+            fullWidth
+            margin="normal"
+            type="number"
+            value={formData.nwound}
+            onChange={(e) => setFormData({ ...formData, nwound: Number(e.target.value) })}
+          />
+          <TextField
+            label="Perpetrators"
+            fullWidth
+            margin="normal"
+            type="number"
+            value={formData.nperps}
+            onChange={(e) => setFormData({ ...formData, nperps: Number(e.target.value) })}
+          />
+          <TextField
+            label="Summary"
+            fullWidth
+            margin="normal"
+            value={formData.summary}
+            onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
           />
           <Button
             variant="contained"
