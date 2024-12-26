@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import Select from "react-select";
@@ -30,7 +30,7 @@ const AreasOrganIsNumberOne = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/analysis/relationships/deadliest-regions?orgName=${encodeURIComponent(
+        `https://final-exam-df5g.onrender.com/api/analysis/relationships/deadliest-regions?orgName=${encodeURIComponent(
           orgName
         )}`
       );

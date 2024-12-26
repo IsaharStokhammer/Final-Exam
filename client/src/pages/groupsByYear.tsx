@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
 
@@ -24,7 +24,7 @@ const GroupsByYear = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/api/analysis/relationships/groups-by-year/${year}`
+        `https://final-exam-df5g.onrender.com/api/analysis/relationships/groups-by-year/${year}`
       );
       const data = response.data.data.data;
 

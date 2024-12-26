@@ -39,7 +39,7 @@ const AllAttacksOfGroup = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/api/analysis/relationships/groups-by-year/2004?group=${encodeURIComponent(group)}`
+        `https://final-exam-df5g.onrender.com/api/analysis/relationships/groups-by-year/2004?group=${encodeURIComponent(group)}`
       );
       const data = response.data.data.data;
 

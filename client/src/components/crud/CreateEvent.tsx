@@ -11,9 +11,28 @@ import "leaflet/dist/leaflet.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const CreateEvent = () => {
+interface TerrorEvent {
+  eventid: string;
+  date: Date;
+  country_txt: string;
+  region_txt: string;
+  city: string;
+  latitude: number | null;
+  longitude: number | null;
+  attacktype1_txt: string;
+  targtype1_txt: string;
+  target1: string;
+  gname: string;
+  weaptype1_txt: string;
+  nkill: number;
+  nwound: number;
+  nperps: number;
+  summary: string;
+}
+
+const CreateEvent: React.FC = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TerrorEvent>({
     eventid: "",
     date: new Date(),
     country_txt: "",
@@ -42,7 +61,7 @@ const CreateEvent = () => {
       const [year, month, day] = [date.getFullYear(), date.getMonth() + 1, date.getDate()];
       const finalData = { ...rest, iyear: year, imonth: month, iday: day };
 
-      await axios.post("http://localhost:3000/crud/create", finalData);
+      await axios.post("https://final-exam-df5g.onrender.com/crud/create", finalData);
       setCreateModalOpen(false);
       setFormData({
         eventid: "",
@@ -68,10 +87,14 @@ const CreateEvent = () => {
     }
   };
 
-  const LocationMarker = () => {
+  const LocationMarker: React.FC = () => {
     useMapEvents({
       click(e) {
-        setFormData({ ...formData, latitude: e.latlng.lat, longitude: e.latlng.lng });
+        setFormData((prev) => ({
+          ...prev,
+          latitude: e.latlng.lat,
+          longitude: e.latlng.lng,
+        }));
       },
     });
 
@@ -117,8 +140,8 @@ const CreateEvent = () => {
             <label>Date:</label>
             <DatePicker
               selected={formData.date}
-              onChange={(date) => {
-                if (date instanceof Date) {
+              onChange={(date: Date | null) => {
+                if (date) {
                   setFormData({ ...formData, date });
                 } else {
                   toast.error("Invalid date selected");

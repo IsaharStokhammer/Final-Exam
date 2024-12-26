@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -14,9 +14,9 @@ const DeleteEvent = () => {
       return;
     }
     try {
-      const response = await axios.delete(`http://localhost:3000/crud/delete/${deleteId}`);
-      toast.success(`Event with ID ${deleteId} deleted successfully!`);
-      setDeleteId(""); // Reset input
+      const response = await axios.delete(`https://final-exam-df5g.onrender.com/crud/delete/${deleteId}`);
+      toast.success(`Event with ID ${deleteId} deleted successfully!  ${response.data.message}`);``
+      setDeleteId(""); 
     } catch (error) {
       toast.error("Failed to delete event");
     }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Bar } from "react-chartjs-2";
@@ -103,7 +103,7 @@ const TopGroups = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/api/analysis/relationships/top-groups/${encodeURIComponent(
+        `https://final-exam-df5g.onrender.com/api/analysis/relationships/top-groups/${encodeURIComponent(
           region
         )}/?limit=${limit}`
       );

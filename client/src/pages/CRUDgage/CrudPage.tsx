@@ -1,4 +1,3 @@
-import React from "react";
 import CreateEvent from "../../components/crud/CreateEvent";
 import UpdateEvent from "../../components/crud/UpdateEvent";
 import DeleteEvent from "../../components/crud/DeleteEvent";

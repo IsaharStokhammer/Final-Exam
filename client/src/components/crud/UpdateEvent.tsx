@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -43,7 +43,7 @@ const UpdateEvent = () => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:3000/crud/read/${eventID}`);
+      const response = await axios.get(`https://final-exam-df5g.onrender.com/crud/read/${eventID}`);
       setFormData(response.data.data.response);
       setErrorMessage("");
       setUpdateModalOpen(true);
@@ -64,7 +64,7 @@ const UpdateEvent = () => {
         data: formData,
       };
 
-      await axios.put("http://localhost:3000/crud/update", payload);
+      await axios.put("https://final-exam-df5g.onrender.com/crud/update", payload);
       alert("Event updated successfully!");
       setUpdateModalOpen(false);
     } catch (error) {

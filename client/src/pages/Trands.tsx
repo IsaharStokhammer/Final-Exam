@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
 import {
@@ -34,7 +34,7 @@ const Trends = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:3000/api/analysis/incident-trends/${fromYear}/${toYear}`
+        `https://final-exam-df5g.onrender.com/api/analysis/incident-trends/${fromYear}/${toYear}`
       );
 
       const data = response.data.data.data;

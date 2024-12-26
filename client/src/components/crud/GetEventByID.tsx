@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,7 +15,7 @@ const GetEventByID = () => {
 
     setEventData(null); // Reset previous data
     try {
-      const response = await axios.get(`http://localhost:3000/crud/read/${eventID}`);
+      const response = await axios.get(`https://final-exam-df5g.onrender.com/crud/read/${eventID}`);
       if (response.data && response.data.data.response) {
         setEventData(response.data.data.response);
         toast.success("Event details fetched successfully!");
